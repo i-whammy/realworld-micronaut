@@ -1,14 +1,14 @@
-package realworld.micronaut
+package com.whammy
 
 import io.micronaut.runtime.Micronaut
 
-object Application {
+object RealworldApplication {
 
     @JvmStatic
     fun main(args: Array<String>) {
         Micronaut.build()
-                .packages("realworld.micronaut")
-                .mainClass(Application.javaClass)
+                .packages("com.whammy")
+                .mainClass(RealworldApplication.javaClass)
                 .start()
     }
 }
