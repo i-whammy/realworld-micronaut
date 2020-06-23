@@ -2,7 +2,9 @@ package com.whammy.user.service
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.whammy.user.domain.Authentication
 import com.whammy.user.domain.User
+import com.whammy.user.exception.AuthenticationFailureException
 import com.whammy.user.exception.AuthorizationFailureException
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -19,6 +21,8 @@ class UserService {
     private val algorithm = Algorithm.HMAC256(secret)
 
     private val verifier = JWT.require(algorithm).withIssuer(issuer).build()
+
+    private var currentUser = ThreadLocal<User>()
 
     fun issueNewToken(user: User): User {
         return User(
@@ -47,4 +51,17 @@ class UserService {
             throw AuthorizationFailureException("Authorization Failed.")
         }
     }
+
+    fun setUser(user: User) {
+        this.currentUser.set(user)
+    }
+
+    fun getCurrentUser(): User {
+        return this.currentUser.get() ?: throw AuthenticationFailureException("Authentication failed")
+    }
+
+    fun refreshCurrentUser() {
+        this.currentUser.remove()
+    }
+
 }
